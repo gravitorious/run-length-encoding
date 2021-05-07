@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/run_length_encoding.dir/main.c.o"
+  "CMakeFiles/run_length_encoding.dir/compress.c.o"
   "run_length_encoding"
   "run_length_encoding.pdb"
 )

@@ -57,27 +57,27 @@ include CMakeFiles/run_length_encoding.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/run_length_encoding.dir/flags.make
 
-CMakeFiles/run_length_encoding.dir/main.c.o: CMakeFiles/run_length_encoding.dir/flags.make
-CMakeFiles/run_length_encoding.dir/main.c.o: ../main.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/nikolasmavrogeneiadis/Desktop/run-length-encoding/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/run_length_encoding.dir/main.c.o"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/run_length_encoding.dir/main.c.o   -c /Users/nikolasmavrogeneiadis/Desktop/run-length-encoding/main.c
+CMakeFiles/run_length_encoding.dir/compress.c.o: CMakeFiles/run_length_encoding.dir/flags.make
+CMakeFiles/run_length_encoding.dir/compress.c.o: ../compress.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/nikolasmavrogeneiadis/Desktop/run-length-encoding/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/run_length_encoding.dir/compress.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/run_length_encoding.dir/compress.c.o   -c /Users/nikolasmavrogeneiadis/Desktop/run-length-encoding/compress.c
 
-CMakeFiles/run_length_encoding.dir/main.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/run_length_encoding.dir/main.c.i"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/nikolasmavrogeneiadis/Desktop/run-length-encoding/main.c > CMakeFiles/run_length_encoding.dir/main.c.i
+CMakeFiles/run_length_encoding.dir/compress.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/run_length_encoding.dir/compress.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/nikolasmavrogeneiadis/Desktop/run-length-encoding/compress.c > CMakeFiles/run_length_encoding.dir/compress.c.i
 
-CMakeFiles/run_length_encoding.dir/main.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/run_length_encoding.dir/main.c.s"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/nikolasmavrogeneiadis/Desktop/run-length-encoding/main.c -o CMakeFiles/run_length_encoding.dir/main.c.s
+CMakeFiles/run_length_encoding.dir/compress.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/run_length_encoding.dir/compress.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/nikolasmavrogeneiadis/Desktop/run-length-encoding/compress.c -o CMakeFiles/run_length_encoding.dir/compress.c.s
 
 # Object files for target run_length_encoding
 run_length_encoding_OBJECTS = \
-"CMakeFiles/run_length_encoding.dir/main.c.o"
+"CMakeFiles/run_length_encoding.dir/compress.c.o"
 
 # External object files for target run_length_encoding
 run_length_encoding_EXTERNAL_OBJECTS =
 
-run_length_encoding: CMakeFiles/run_length_encoding.dir/main.c.o
+run_length_encoding: CMakeFiles/run_length_encoding.dir/compress.c.o
 run_length_encoding: CMakeFiles/run_length_encoding.dir/build.make
 run_length_encoding: CMakeFiles/run_length_encoding.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/nikolasmavrogeneiadis/Desktop/run-length-encoding/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking C executable run_length_encoding"

@@ -123,32 +123,32 @@ run_length_encoding/fast:
 	$(MAKE) -f CMakeFiles/run_length_encoding.dir/build.make CMakeFiles/run_length_encoding.dir/build
 .PHONY : run_length_encoding/fast
 
-main.o: main.c.o
+compress.o: compress.c.o
 
-.PHONY : main.o
+.PHONY : compress.o
 
 # target to build an object file
-main.c.o:
-	$(MAKE) -f CMakeFiles/run_length_encoding.dir/build.make CMakeFiles/run_length_encoding.dir/main.c.o
-.PHONY : main.c.o
+compress.c.o:
+	$(MAKE) -f CMakeFiles/run_length_encoding.dir/build.make CMakeFiles/run_length_encoding.dir/compress.c.o
+.PHONY : compress.c.o
 
-main.i: main.c.i
+compress.i: compress.c.i
 
-.PHONY : main.i
+.PHONY : compress.i
 
 # target to preprocess a source file
-main.c.i:
-	$(MAKE) -f CMakeFiles/run_length_encoding.dir/build.make CMakeFiles/run_length_encoding.dir/main.c.i
-.PHONY : main.c.i
+compress.c.i:
+	$(MAKE) -f CMakeFiles/run_length_encoding.dir/build.make CMakeFiles/run_length_encoding.dir/compress.c.i
+.PHONY : compress.c.i
 
-main.s: main.c.s
+compress.s: compress.c.s
 
-.PHONY : main.s
+.PHONY : compress.s
 
 # target to generate assembly for a file
-main.c.s:
-	$(MAKE) -f CMakeFiles/run_length_encoding.dir/build.make CMakeFiles/run_length_encoding.dir/main.c.s
-.PHONY : main.c.s
+compress.c.s:
+	$(MAKE) -f CMakeFiles/run_length_encoding.dir/build.make CMakeFiles/run_length_encoding.dir/compress.c.s
+.PHONY : compress.c.s
 
 # Help Target
 help:
@@ -159,9 +159,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... run_length_encoding"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
+	@echo "... compress.o"
+	@echo "... compress.i"
+	@echo "... compress.s"
 .PHONY : help
 
 
