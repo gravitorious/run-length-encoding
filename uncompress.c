@@ -26,6 +26,15 @@ void printRuns(run *runs, int totalRuns){
     }
 }
 
+void writeRunsToUncompressedFile(FILE *fp, run *runs, int totalRuns){
+    int i, j;
+    for(i = 0; i < totalRuns; i++){
+        for(j = 0; j < runs[i].count; j++){
+            fprintf(fp, "%c", runs[i].c);
+        }
+    }
+}
+
 /*
  * put runs from compressed file into memory
  */
@@ -69,7 +78,7 @@ int openBinaryFile(FILE **fp){
  * opening text file
  */
 int openTextFile(FILE **fp){
-    *fp = fopen(UNCOMPRESSED_FILE, "r");
+    *fp = fopen(UNCOMPRESSED_FILE, "w");
     if(*fp == NULL) return FALSE;
     else return TRUE;
 }
@@ -93,6 +102,15 @@ int main(int argc, char *argv[]){
     }
     readRunsFromCompressedFile(bfp, runs, total_runs);
     printRuns(runs, total_runs);
-
+    printf("The size of the input compressed file is: %d bytes\n", sizeOfFile(bfp));
+    fclose(bfp);
+    is_opened = openTextFile(&tfp);
+    if(is_opened == FALSE){
+        puts("File can't be opened for some reason...\n");
+        exit(EXIT_FAILURE);
+    }
+    writeRunsToUncompressedFile(tfp, runs, total_runs);
+    printf("The size of the output uncompressed file is: %d bytes\n", sizeOfFile(tfp));
+    fclose(bfp);
     return 0;
 }

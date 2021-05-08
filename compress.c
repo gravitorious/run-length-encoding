@@ -149,6 +149,7 @@ int main(int argc, char *argv[]){
         exit(EXIT_FAILURE);
     }
     writeRunsToCompressedFile(bfp, runs, total_runs);
+    fclose(bfp);
     printf("The size of the output compressed file is: %d bytes\n", sizeOfFile(bfp));
     return 0;
 }
