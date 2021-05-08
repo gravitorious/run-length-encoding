@@ -3,10 +3,9 @@
 //
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #define TRUE 1
 #define FALSE 0
-#define UNCOMPRESSED_FILE "uncompressed_text.txt"
-#define COMPRESSED_FILE "compressed_text.compressed"
 
 typedef struct{
     char c; //character
@@ -99,8 +98,8 @@ int countRuns(FILE *fp){
 /*
  * opening binary file
  */
-int openBinaryFile(FILE **fp){
-    *fp = fopen(COMPRESSED_FILE, "wb");
+int openBinaryFile(FILE **fp, char *bin_file){
+    *fp = fopen(bin_file, "wb");
     if(*fp == NULL) return FALSE;
     else return TRUE;
 }
@@ -108,21 +107,24 @@ int openBinaryFile(FILE **fp){
 /*
  * opening text file
  */
-int openTextFile(FILE **fp){
-    *fp = fopen(UNCOMPRESSED_FILE, "r");
+int openTextFile(FILE **fp, char *text_file){
+    *fp = fopen(text_file, "r");
     if(*fp == NULL) return FALSE;
     else return TRUE;
 }
 
 int main(int argc, char *argv[]){
     FILE *tfp = NULL, *bfp = NULL;
+    char text_file[100], bin_file[100];
+    strcpy(text_file, argv[1]);
+    strcpy(bin_file, argv[2]);
     run *runs;
-    int is_opened = openTextFile(&tfp);
+    int is_opened = openTextFile(&tfp, text_file);
     if(is_opened == FALSE){
         puts("File can't be opened for some reason...\n");
         exit(EXIT_FAILURE);
     }
-    printf("Text file %s opened successfully...\n", UNCOMPRESSED_FILE);
+    printf("Text file %s opened successfully...\n", text_file);
     int total_runs = countRuns(tfp);
     rewind(tfp);
     if(total_runs == -1){
@@ -140,16 +142,16 @@ int main(int argc, char *argv[]){
     saveRuns(runs, tfp);
     printRuns(runs, total_runs);
     printf("The size of the input uncompressed file is: %d bytes\n", sizeOfFile(tfp));
-
     fclose(tfp);
 
-    is_opened = openBinaryFile(&bfp);
+    is_opened = openBinaryFile(&bfp, bin_file);
     if(is_opened == FALSE){
         puts("Binary file can't be opened for some reason...\n");
         exit(EXIT_FAILURE);
     }
     writeRunsToCompressedFile(bfp, runs, total_runs);
-    fclose(bfp);
     printf("The size of the output compressed file is: %d bytes\n", sizeOfFile(bfp));
+    fclose(bfp);
+    free(runs);
     return 0;
 }

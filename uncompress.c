@@ -3,10 +3,10 @@
 //
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #define TRUE 1
 #define FALSE 0
-#define UNCOMPRESSED_FILE "uncompressed_text.txt"
-#define COMPRESSED_FILE "compressed_text.compressed"
+
 
 typedef struct{
     char c; //character
@@ -26,6 +26,9 @@ void printRuns(run *runs, int totalRuns){
     }
 }
 
+/*
+ * Write runs to text file
+ */
 void writeRunsToUncompressedFile(FILE *fp, run *runs, int totalRuns){
     int i, j;
     for(i = 0; i < totalRuns; i++){
@@ -68,8 +71,8 @@ int calculateTotalRuns(FILE *fp){
 /*
  * opening binary file
  */
-int openBinaryFile(FILE **fp){
-    *fp = fopen(COMPRESSED_FILE, "rb");
+int openBinaryFile(FILE **fp, char *bin_file){
+    *fp = fopen(bin_file, "rb");
     if(*fp == NULL) return FALSE;
     else return TRUE;
 }
@@ -77,22 +80,33 @@ int openBinaryFile(FILE **fp){
 /*
  * opening text file
  */
-int openTextFile(FILE **fp){
-    *fp = fopen(UNCOMPRESSED_FILE, "w");
+int openTextFile(FILE **fp, char *text_file){
+    *fp = fopen(text_file, "w");
     if(*fp == NULL) return FALSE;
     else return TRUE;
 }
 
 int main(int argc, char *argv[]){
     FILE *tfp = NULL, *bfp = NULL;
+    char text_file[100], bin_file[100];
     run *runs;
     int total_runs;
-    int is_opened = openBinaryFile(&bfp);
+    if(argc == 3){
+        printf("mphka\n");
+        strcpy(bin_file, argv[1]);
+        strcpy(text_file, argv[2]);
+    }
+    else if(argc == 4){
+        strcpy(bin_file, argv[2]);
+        strcpy(text_file, argv[3]);
+    }
+
+    int is_opened = openBinaryFile(&bfp, bin_file);
     if(is_opened == FALSE){
         puts("File can't be opened for some reason...\n");
         exit(EXIT_FAILURE);
     }
-    printf("Text file %s opened successfully...\n", COMPRESSED_FILE);
+    printf("Text file %s opened successfully...\n", bin_file);
     total_runs = calculateTotalRuns(bfp);
     printf("%d total runs readed from input file...\n", total_runs);
     runs = (run *)malloc(total_runs * sizeof(run));
@@ -104,7 +118,7 @@ int main(int argc, char *argv[]){
     printRuns(runs, total_runs);
     printf("The size of the input compressed file is: %d bytes\n", sizeOfFile(bfp));
     fclose(bfp);
-    is_opened = openTextFile(&tfp);
+    is_opened = openTextFile(&tfp, text_file);
     if(is_opened == FALSE){
         puts("File can't be opened for some reason...\n");
         exit(EXIT_FAILURE);
@@ -112,5 +126,7 @@ int main(int argc, char *argv[]){
     writeRunsToUncompressedFile(tfp, runs, total_runs);
     printf("The size of the output uncompressed file is: %d bytes\n", sizeOfFile(tfp));
     fclose(bfp);
+
+    free(runs);
     return 0;
 }
