@@ -78,7 +78,7 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/Users/nikolasmavrogeneiadis/Desktop/run-length-encoding/compress.c">
+		<Unit filename="/Users/nikolasmavrogeneiadis/Desktop/run-length-encoding/uncompress.c">
 			<Option target="run_length_encoding"/>
 		</Unit>
 		<Unit filename="/Users/nikolasmavrogeneiadis/Desktop/run-length-encoding/CMakeLists.txt">

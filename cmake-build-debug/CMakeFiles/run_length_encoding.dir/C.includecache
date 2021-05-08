@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/Users/nikolasmavrogeneiadis/Desktop/run-length-encoding/compress.c
+/Users/nikolasmavrogeneiadis/Desktop/run-length-encoding/uncompress.c
 stdio.h
 -
 stdlib.h
