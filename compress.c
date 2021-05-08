@@ -6,12 +6,35 @@
 #define TRUE 1
 #define FALSE 0
 #define UNCOMPRESSED_FILE "uncompressed_text.txt"
+#define COMPRESSED_FILE "compressed_text.compressed"
 
 typedef struct{
     char c; //character
     int count;
 }run;
 
+void writeRunsToCompressedFile(FILE *fp, run *runs, int totalRuns){
+    int i;
+    for(i = 0; i < totalRuns; i++){
+        fseek(fp, i * sizeof(run), 0);
+        fwrite(&runs[i], sizeof(runs[i]), 1, fp);
+    }
+}
+
+/*
+ * returns the size of the file
+ */
+int sizeOfFile(FILE *fp){
+    int size;
+    fseek(fp, 0L, SEEK_END);
+    size = ftell(fp);
+    rewind(fp);
+    return size;
+}
+
+/*
+ * print runs
+ */
 void printRuns(run *runs, int totalRuns){
     int i;
     for(i = 0; i < totalRuns; i++){
@@ -21,7 +44,9 @@ void printRuns(run *runs, int totalRuns){
     }
 }
 
-
+/*
+ * Putting runs from file into memory
+ */
 void saveRuns(run *runs, FILE *fp){
     int current_run;
     char ch, char_of_current_run;
@@ -72,25 +97,34 @@ int countRuns(FILE *fp){
 }
 
 /*
- * opening file
+ * opening binary file
  */
-int openFile(FILE **fp){
+int openBinaryFile(FILE **fp){
+    *fp = fopen(COMPRESSED_FILE, "wb");
+    if(*fp == NULL) return FALSE;
+    else return TRUE;
+}
+
+/*
+ * opening text file
+ */
+int openTextFile(FILE **fp){
     *fp = fopen(UNCOMPRESSED_FILE, "r");
     if(*fp == NULL) return FALSE;
     else return TRUE;
 }
 
 int main(int argc, char *argv[]){
-    FILE *fp = NULL;
+    FILE *tfp = NULL, *bfp = NULL;
     run *runs;
-    int is_opened = openFile(&fp);
+    int is_opened = openTextFile(&tfp);
     if(is_opened == FALSE){
         puts("File can't be opened for some reason...\n");
         exit(EXIT_FAILURE);
     }
-    printf("File %s opened successfully...\n", UNCOMPRESSED_FILE);
-    int total_runs = countRuns(fp);
-    rewind(fp);
+    printf("Text file %s opened successfully...\n", UNCOMPRESSED_FILE);
+    int total_runs = countRuns(tfp);
+    rewind(tfp);
     if(total_runs == -1){
         printf("File is empty...\n");
         exit(EXIT_FAILURE);
@@ -103,7 +137,18 @@ int main(int argc, char *argv[]){
         printf("Unexpected problem with memory...\n");
         exit(EXIT_FAILURE);
     }
-    saveRuns(runs, fp);
+    saveRuns(runs, tfp);
     printRuns(runs, total_runs);
+    printf("The size of the input uncompressed file is: %d bytes\n", sizeOfFile(tfp));
+
+    fclose(tfp);
+
+    is_opened = openBinaryFile(&bfp);
+    if(is_opened == FALSE){
+        puts("Binary file can't be opened for some reason...\n");
+        exit(EXIT_FAILURE);
+    }
+    writeRunsToCompressedFile(bfp, runs, total_runs);
+    printf("The size of the output compressed file is: %d bytes\n", sizeOfFile(bfp));
     return 0;
 }
