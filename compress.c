@@ -17,15 +17,26 @@ typedef struct{
  * counting runs of the uncompressed file
  */
 int countRuns(FILE *fp){
-    char ch;
+    int count = 0;
+    char ch, char_of_current_run;
+    ch = fgetc(fp);
+    if(feof(fp)) return -1;
+    char_of_current_run = ch;
+    count++;
     while(!feof(fp)){
         ch = fgetc(fp);
         if(feof(fp)) break;
-        printf("%c\n", ch);
+        if(ch != char_of_current_run){
+            count++;
+            char_of_current_run = ch;
+        }
     }
-    return 0;
+    return count;
 }
 
+/*
+ * opening file
+ */
 int openFile(FILE **fp){
     *fp = fopen(UNCOMPRESSED_FILE, "r");
     if(*fp == NULL) return FALSE;
@@ -36,11 +47,16 @@ int main(int argc, char *argv[]){
     FILE *fp = NULL;
     int is_opened = openFile(&fp);
     if(is_opened == FALSE){
-        puts("File can't be opened for some reason");
-        exit(1);
+        puts("File can't be opened for some reason...\n");
+        exit(EXIT_FAILURE);
     }
-    printf("File %s opened successfully...", UNCOMPRESSED_FILE);
-    int result = countRuns(fp);
+    printf("File %s opened successfully...\n", UNCOMPRESSED_FILE);
+    int total_runs = countRuns(fp);
+    if(total_runs == -1){
+        printf("File is empty...\n");
+        exit(EXIT_FAILURE);
+    }
+
 
     return 0;
 }
