@@ -319,8 +319,10 @@ int main(int argc, char *argv[]){
                    || inchar == '\r' || inchar == '\t'
                    || inchar == ' ');
             replaceSequence(runs_array, start, end, inchar);
-            runs = (run *)malloc(total_runs * sizeof(run));
-            moveRunsBackToStructs(runs_array, total_chars, runs, total_runs); //move runs back to structs
+            number_of_new_runs = calculateRunsFromArray(runs_array, total_chars);
+            runs = (run *)malloc(number_of_new_runs * sizeof(run));
+            moveRunsBackToStructs(runs_array, total_chars, runs, number_of_new_runs); //move runs back to structs
+            printRuns(runs, number_of_new_runs);
             free(runs_array); //we free the memory for array because we don't need it anymore
             //since we have the modified file structs, we just need to write it to binary file and text file
             int is_opened = openBinaryFileForWriting(&bfp, bin_file);
@@ -328,8 +330,19 @@ int main(int argc, char *argv[]){
                 puts("File can't be opened for some reason...\n");
                 exit(EXIT_FAILURE);
             }
-            writeRunsToCompressedFile(bfp, runs, total_runs); //modify the compressed file after the modification
+            writeRunsToCompressedFile(bfp, runs, number_of_new_runs); //modify the compressed file after the modification
             fclose(bfp);
+        }
+        else if(answer == 3){
+            int start, end;
+            printf("Sequence start position: [1-%d]\n", total_chars);
+            do{
+                scanf("%d", &start);
+            }while(start < 0 || start > total_chars);
+            printf("Sequence end position: [%d-%d]\n", start, total_chars);
+            do{
+                scanf("%d", &end);
+            }while(end < start || end > total_chars);
         }
     }
 
