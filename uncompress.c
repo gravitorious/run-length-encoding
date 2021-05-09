@@ -22,7 +22,61 @@ void printArray(char *array, int size){
     printf("\n");
 }
 
+/*
+ * write runs to the compressed file
+ */
+void writeRunsToCompressedFile(FILE *fp, run *runs, int totalRuns){
+    int i;
+    for(i = 0; i < totalRuns; i++){
+        fseek(fp, i * sizeof(run), 0);
+        fwrite(&runs[i], sizeof(runs[i]), 1, fp);
+    }
+}
 
+/*
+ * since we modified the compressed file with the help of the array, we move the elements from array
+ * back to structs
+ */
+void moveRunsBackToStructs(char *newArray, int size_of_new_array, run *runs, int totalRuns){
+    int i, j = 0, curent_run = 0;
+    char current_char = newArray[0];
+    runs[0].c = current_char;
+    runs[0].count = 1;
+    for(i = 1; i < size_of_new_array; i++){
+        if(newArray[i] != current_char){
+            j++;
+            current_char = newArray[i];
+            runs[j].c = current_char;
+            runs[j].count = 1;
+        }
+        else{
+            runs[j].count++;
+        }
+    }
+
+}
+
+/*
+ * returns total runs from the new array
+ */
+int calculateRunsFromArray(char *newArray, int size){
+    int i, count;
+    char current_char = newArray[0];
+    count = 1;
+
+    for(i = 1; i < size; i++){
+        if(newArray[i] != current_char){
+            current_char = newArray[i];
+            count++;
+        }
+    }
+    return count;
+}
+
+
+/*
+ * insert new char to array
+ */
 void insertNewChar(char ch, int times, int position, char *charArray, int totalChars, char *newArray){
     int i,j,k,p;
     for(i = 0; i < position; i++){ //put previous characters into new array
@@ -146,6 +200,16 @@ int calculateTotalRuns(FILE *fp){
 }
 
 /*
+ * opening binary file for writing
+ */
+int openBinaryFileForWriting(FILE **fp, char *bin_file){
+    *fp = fopen(bin_file, "wb");
+    if(*fp == NULL) return FALSE;
+    else return TRUE;
+}
+
+
+/*
  * opening binary file
  */
 int openBinaryFile(FILE **fp, char *bin_file){
@@ -168,7 +232,7 @@ int main(int argc, char *argv[]){
     FILE *tfp = NULL, *bfp = NULL;
     char text_file[100], bin_file[100], *runs_array, inchar, *new_array;
     run *runs;
-    int total_runs, total_chars, answer, times, position, size_of_new_array;
+    int total_runs, total_chars, answer, times, position, size_of_new_array, number_of_new_runs;
     if(argc == 3){
         strcpy(bin_file, argv[1]);
         strcpy(text_file, argv[2]);
@@ -217,9 +281,21 @@ int main(int argc, char *argv[]){
             new_array = (char *)malloc(size_of_new_array * sizeof(char));
             insertNewChar(inchar, times, position, runs_array, total_chars, new_array);
             printArray(new_array, size_of_new_array);
+            number_of_new_runs = calculateRunsFromArray(new_array, size_of_new_array);
+            printf("number of new runs: %d", number_of_new_runs);
+            runs = (run *)malloc(total_runs * sizeof(run));
+            moveRunsBackToStructs(new_array, size_of_new_array, runs, number_of_new_runs);
+            printRuns(runs, number_of_new_runs);
+            free(new_array);
+            //since we have the modified file structs, we just need to write it to binary file and text file
+            int is_opened = openBinaryFileForWriting(&bfp, bin_file);
+            if(is_opened == FALSE){
+                puts("File can't be opened for some reason...\n");
+                exit(EXIT_FAILURE);
+            }
+            writeRunsToCompressedFile(bfp, runs, number_of_new_runs);
+            fclose(bfp);
         }
-        exit(1);
-
     }
 
     /*

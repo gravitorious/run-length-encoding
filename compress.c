@@ -12,6 +12,9 @@ typedef struct{
     int count;
 }run;
 
+/*
+ * write runs to the compressed file
+ */
 void writeRunsToCompressedFile(FILE *fp, run *runs, int totalRuns){
     int i;
     for(i = 0; i < totalRuns; i++){
