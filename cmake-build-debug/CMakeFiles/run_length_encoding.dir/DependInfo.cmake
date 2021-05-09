@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/Users/nikolasmavrogeneiadis/Desktop/run-length-encoding/compress.c" "/Users/nikolasmavrogeneiadis/Desktop/run-length-encoding/cmake-build-debug/CMakeFiles/run_length_encoding.dir/compress.c.o"
+  "/Users/nikolasmavrogeneiadis/Desktop/run-length-encoding/uncompress.c" "/Users/nikolasmavrogeneiadis/Desktop/run-length-encoding/cmake-build-debug/CMakeFiles/run_length_encoding.dir/uncompress.c.o"
   )
 set(CMAKE_C_COMPILER_ID "AppleClang")
 

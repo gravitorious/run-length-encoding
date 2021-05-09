@@ -14,6 +14,43 @@ typedef struct{
 }run;
 
 
+
+
+
+/*
+ *
+ */
+void printArray(char *array, int size){
+    int i;
+    for(i = 0; i < size; i++) printf("%c", array[i]);
+    printf("\n");
+}
+
+/*
+ * put runs from structs into an array so we can modify them more easily
+ */
+void putRunsIntoAnArray(char *runsArray, run *runs, int totalRuns){
+    int i,j = 0;
+    int k = 0;
+    for(i = 0; i < totalRuns; i++){
+        for(j = k; j < k + runs[i].count; j++){
+            runsArray[j] = runs[i].c;
+        }
+        k = j;
+    }
+}
+
+/*
+ * return total of characters
+ */
+int totalCharacters(run *runs, int totalRuns){
+    int i, total_chars = 0;
+    for(i = 0; i < totalRuns; i++){
+        total_chars+=runs[i].count;
+    }
+    return total_chars;
+}
+
 /*
  * print runs
  */
@@ -86,21 +123,41 @@ int openTextFile(FILE **fp, char *text_file){
     else return TRUE;
 }
 
+
 int main(int argc, char *argv[]){
     FILE *tfp = NULL, *bfp = NULL;
     char text_file[100], bin_file[100];
     run *runs;
-    int total_runs;
+    int total_runs, total_chars;
+    char *runs_array;
     if(argc == 3){
-        printf("mphka\n");
         strcpy(bin_file, argv[1]);
         strcpy(text_file, argv[2]);
     }
-    else if(argc == 4){
+    else if(argc == 4 && strcmp(argv[1], "-e") == 0){
         strcpy(bin_file, argv[2]);
         strcpy(text_file, argv[3]);
+        int is_opened = openBinaryFile(&bfp, bin_file);
+        if(is_opened == FALSE){
+            puts("File can't be opened for some reason...\n");
+            exit(EXIT_FAILURE);
+        }
+        /*
+         * put runs into an array so we can modify runs more easily
+         */
+        total_runs = calculateTotalRuns(bfp);
+        runs = (run *)malloc(total_runs * sizeof(run));
+        readRunsFromCompressedFile(bfp, runs, total_runs);
+        fclose(bfp);
+        total_chars = totalCharacters(runs, total_runs);
+        runs_array = (char *)malloc(total_chars * sizeof(char));
+        putRunsIntoAnArray(runs_array, runs, total_runs);
+        printArray(runs_array, total_chars);
     }
 
+    /*
+     * uncompress file
+     */
     int is_opened = openBinaryFile(&bfp, bin_file);
     if(is_opened == FALSE){
         puts("File can't be opened for some reason...\n");

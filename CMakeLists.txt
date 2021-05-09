@@ -3,4 +3,4 @@ project(run_length_encoding C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(run_length_encoding compress.c)
+add_executable(run_length_encoding uncompress.c)
