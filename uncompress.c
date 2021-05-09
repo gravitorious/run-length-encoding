@@ -22,17 +22,30 @@ void printArray(char *array, int size){
     printf("\n");
 }
 
+
+/*
+ * delete sequence from array with char
+ */
+void deleteSequence(char *inputArray, int totalChars, int start, int end, char *newArray){
+    int i, j;
+    for(i = 0; i < start -1; i++){
+        newArray[i] = inputArray[i];
+    }
+    for(j = end; j < totalChars; j++){
+        newArray[i] = inputArray[j];
+        i++;
+    }
+}
+
 /*
  * replace sequence from array with char
  */
-
 void replaceSequence(char *newArray, int start, int end, char ch){
     int i;
     for(i = start-1; i < end; i++){
         newArray[i] = ch;
     }
 }
-
 
 /*
  * write runs to the compressed file
@@ -322,7 +335,6 @@ int main(int argc, char *argv[]){
             number_of_new_runs = calculateRunsFromArray(runs_array, total_chars);
             runs = (run *)malloc(number_of_new_runs * sizeof(run));
             moveRunsBackToStructs(runs_array, total_chars, runs, number_of_new_runs); //move runs back to structs
-            printRuns(runs, number_of_new_runs);
             free(runs_array); //we free the memory for array because we don't need it anymore
             //since we have the modified file structs, we just need to write it to binary file and text file
             int is_opened = openBinaryFileForWriting(&bfp, bin_file);
@@ -335,6 +347,7 @@ int main(int argc, char *argv[]){
         }
         else if(answer == 3){
             int start, end;
+            char *array_after_deletion;
             printf("Sequence start position: [1-%d]\n", total_chars);
             do{
                 scanf("%d", &start);
@@ -343,6 +356,22 @@ int main(int argc, char *argv[]){
             do{
                 scanf("%d", &end);
             }while(end < start || end > total_chars);
+            int new_size = total_chars - (end-start+1);
+            array_after_deletion = (char *)malloc(new_size * sizeof(char));
+            deleteSequence(runs_array, total_chars, start, end, array_after_deletion);
+            number_of_new_runs = calculateRunsFromArray(array_after_deletion, new_size);
+            runs = (run *)malloc(number_of_new_runs * sizeof(run));
+            moveRunsBackToStructs(array_after_deletion, new_size, runs, number_of_new_runs); //move runs back to structs
+            free(runs_array); //we free the memory for array because we don't need it anymore
+            free(array_after_deletion);
+            //since we have the modified file structs, we just need to write it to binary file and text file
+            int is_opened = openBinaryFileForWriting(&bfp, bin_file);
+            if(is_opened == FALSE){
+                puts("File can't be opened for some reason...\n");
+                exit(EXIT_FAILURE);
+            }
+            writeRunsToCompressedFile(bfp, runs, number_of_new_runs); //modify the compressed file after the modification
+            fclose(bfp);
         }
     }
 
