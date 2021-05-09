@@ -23,13 +23,25 @@ void printArray(char *array, int size){
 }
 
 /*
+ * replace sequence from array with char
+ */
+
+void replaceSequence(char *newArray, int start, int end, char ch){
+    int i;
+    for(i = start-1; i < end; i++){
+        newArray[i] = ch;
+    }
+}
+
+
+/*
  * write runs to the compressed file
  */
 void writeRunsToCompressedFile(FILE *fp, run *runs, int totalRuns){
     int i;
-    for(i = 0; i < totalRuns; i++){
-        fseek(fp, i * sizeof(run), 0);
-        fwrite(&runs[i], sizeof(runs[i]), 1, fp);
+    for(i = 0; i < totalRuns; i++){ //for each run
+        fseek(fp, i * sizeof(run), 0); //each time we move i * sizeof(run) bytes to write the next run
+        fwrite(&runs[i], sizeof(runs[i]), 1, fp); //write the next run
     }
 }
 
@@ -43,17 +55,16 @@ void moveRunsBackToStructs(char *newArray, int size_of_new_array, run *runs, int
     runs[0].c = current_char;
     runs[0].count = 1;
     for(i = 1; i < size_of_new_array; i++){
-        if(newArray[i] != current_char){
-            j++;
+        if(newArray[i] != current_char){ //we have new run so we move to the next struct
+            j++; //the position of current run
             current_char = newArray[i];
             runs[j].c = current_char;
             runs[j].count = 1;
         }
-        else{
+        else{ //if we don't have new run, we just increase the count
             runs[j].count++;
         }
     }
-
 }
 
 /*
@@ -61,11 +72,11 @@ void moveRunsBackToStructs(char *newArray, int size_of_new_array, run *runs, int
  */
 int calculateRunsFromArray(char *newArray, int size){
     int i, count;
-    char current_char = newArray[0];
+    char current_char = newArray[0]; //character for each run
     count = 1;
 
     for(i = 1; i < size; i++){
-        if(newArray[i] != current_char){
+        if(newArray[i] != current_char){ //it means that we have new array
             current_char = newArray[i];
             count++;
         }
@@ -79,17 +90,14 @@ int calculateRunsFromArray(char *newArray, int size){
  */
 void insertNewChar(char ch, int times, int position, char *charArray, int totalChars, char *newArray){
     int i,j,k,p;
-    for(i = 0; i < position; i++){ //put previous characters into new array
+    for(i = 0; i < position; i++){ //put previous characters (before the position) into new array
         newArray[i] = charArray[i];
     }
     k = i;
-    printf("to i einai: %d\n", k);
-    for(j = i; j < i+times; j++){ //put new char
+    for(j = i; j < i+times; j++){ //put new char as many times as "times"
         newArray[j] = ch;
-        printf("ekteleite\n");
     }
-    printf("to j einai: %d\n", j);
-    for(p = k; p < totalChars; p++){
+    for(p = k; p < totalChars; p++){ //put the rest of chars into new array
         newArray[j] = charArray[p];
         j++;
     }
@@ -98,13 +106,12 @@ void insertNewChar(char ch, int times, int position, char *charArray, int totalC
 /*
  * menu
  */
-
 int menu(){
     int answer;
     do{
         printf("Press 1 to add new runs\n");
-        printf("Press 2 to modify an existing run\n");
-        printf("Press 3 to delete a run\n");
+        printf("Press 2 to modify an existing sequence\n");
+        printf("Press 3 to delete a sequence\n");
         scanf("%d", &answer);
     }while(answer != 1 && answer != 2 && answer != 3);
     return answer;
@@ -116,11 +123,11 @@ int menu(){
 void putRunsIntoAnArray(char *runsArray, run *runs, int totalRuns){
     int i,j = 0;
     int k = 0;
-    for(i = 0; i < totalRuns; i++){
-        for(j = k; j < k + runs[i].count; j++){
+    for(i = 0; i < totalRuns; i++){ //for each run
+        for(j = k; j < k + runs[i].count; j++){ //put all characters from run into runsArray
             runsArray[j] = runs[i].c;
         }
-        k = j;
+        k = j; //from this position we will continue to put chars into runsArray
     }
 }
 
@@ -130,7 +137,7 @@ void putRunsIntoAnArray(char *runsArray, run *runs, int totalRuns){
 int totalCharacters(run *runs, int totalRuns){
     int i, total_chars = 0;
     for(i = 0; i < totalRuns; i++){
-        total_chars+=runs[i].count;
+        total_chars+=runs[i].count; //sum of total characters
     }
     return total_chars;
 }
@@ -248,23 +255,23 @@ int main(int argc, char *argv[]){
         /*
          * put runs into an array so we can modify runs more easily
          */
-        total_runs = calculateTotalRuns(bfp);
+        total_runs = calculateTotalRuns(bfp); //number of runs from compressed file
         runs = (run *)malloc(total_runs * sizeof(run));
-        readRunsFromCompressedFile(bfp, runs, total_runs);
+        readRunsFromCompressedFile(bfp, runs, total_runs); //puts runs to struct array
         fclose(bfp);
-        total_chars = totalCharacters(runs, total_runs);
+        total_chars = totalCharacters(runs, total_runs); //calculate the total of characters
         runs_array = (char *)malloc(total_chars * sizeof(char));
-        putRunsIntoAnArray(runs_array, runs, total_runs);
+        putRunsIntoAnArray(runs_array, runs, total_runs); //put all characters from structs to array
         printf("Your compressed file has the following format\n");
-        printRunsInCompressedMode(runs, total_runs);
+        printRunsInCompressedMode(runs, total_runs); //print the compressed file
         printf("The total characters are: %d\n", total_chars);
         free(runs);
-        answer = menu();
+        answer = menu(); //print the menu
         if(answer == 1){
             printf("In what position do you want to add the run?\n");
             printf("Give a number between 0 and %d\n", total_chars);
             do {
-                scanf("%d", &position);
+                scanf("%d", &position); //read the position that user wants to add a run
             }while(position < 0 || position > total_chars);
             printf("What character do you want to add?\n");
             do{
@@ -277,23 +284,51 @@ int main(int argc, char *argv[]){
             do{
                 scanf("%d", &times);
             }while(times <= 0);
-            size_of_new_array = times+total_chars;
+            size_of_new_array = times+total_chars; //total characters with the new run
             new_array = (char *)malloc(size_of_new_array * sizeof(char));
-            insertNewChar(inchar, times, position, runs_array, total_chars, new_array);
-            printArray(new_array, size_of_new_array);
-            number_of_new_runs = calculateRunsFromArray(new_array, size_of_new_array);
-            printf("number of new runs: %d", number_of_new_runs);
-            runs = (run *)malloc(total_runs * sizeof(run));
-            moveRunsBackToStructs(new_array, size_of_new_array, runs, number_of_new_runs);
-            printRuns(runs, number_of_new_runs);
-            free(new_array);
+            insertNewChar(inchar, times, position, runs_array, total_chars, new_array); //insert new character on the right position
+            number_of_new_runs = calculateRunsFromArray(new_array, size_of_new_array); //calculate the new number of runs
+            runs = (run *)malloc(number_of_new_runs * sizeof(run));
+            moveRunsBackToStructs(new_array, size_of_new_array, runs, number_of_new_runs); //move runs back to structs
+            free(new_array); //we free the memory for array because we don't need it anymore
+            free(runs_array);
             //since we have the modified file structs, we just need to write it to binary file and text file
             int is_opened = openBinaryFileForWriting(&bfp, bin_file);
             if(is_opened == FALSE){
                 puts("File can't be opened for some reason...\n");
                 exit(EXIT_FAILURE);
             }
-            writeRunsToCompressedFile(bfp, runs, number_of_new_runs);
+            writeRunsToCompressedFile(bfp, runs, number_of_new_runs); //modify the compressed file after the modification
+            fclose(bfp);
+        }
+        else if(answer == 2){
+            int start, end;
+            printf("Sequence start position: [1-%d]\n", total_chars);
+            do{
+                scanf("%d", &start);
+            }while(start < 0 || start > total_chars);
+            printf("Sequence end position: [%d-%d]\n", start, total_chars);
+            do{
+                scanf("%d", &end);
+            }while(end < start || end > total_chars);
+            printf("With character you want to replace?\n");
+            do{
+                scanf("%c", &inchar);
+            }while(inchar == '\n' || inchar == '\b'
+                   || inchar == '\f' || inchar == '\n'
+                   || inchar == '\r' || inchar == '\t'
+                   || inchar == ' ');
+            replaceSequence(runs_array, start, end, inchar);
+            runs = (run *)malloc(total_runs * sizeof(run));
+            moveRunsBackToStructs(runs_array, total_chars, runs, total_runs); //move runs back to structs
+            free(runs_array); //we free the memory for array because we don't need it anymore
+            //since we have the modified file structs, we just need to write it to binary file and text file
+            int is_opened = openBinaryFileForWriting(&bfp, bin_file);
+            if(is_opened == FALSE){
+                puts("File can't be opened for some reason...\n");
+                exit(EXIT_FAILURE);
+            }
+            writeRunsToCompressedFile(bfp, runs, total_runs); //modify the compressed file after the modification
             fclose(bfp);
         }
     }
