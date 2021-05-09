@@ -13,17 +13,47 @@ typedef struct{
     int count;
 }run;
 
-
-
-
-
 /*
- *
+ * print array
  */
 void printArray(char *array, int size){
     int i;
     for(i = 0; i < size; i++) printf("%c", array[i]);
     printf("\n");
+}
+
+
+void insertNewChar(char ch, int times, int position, char *charArray, int totalChars, char *newArray){
+    int i,j,k,p;
+    for(i = 0; i < position; i++){ //put previous characters into new array
+        newArray[i] = charArray[i];
+    }
+    k = i;
+    printf("to i einai: %d\n", k);
+    for(j = i; j < i+times; j++){ //put new char
+        newArray[j] = ch;
+        printf("ekteleite\n");
+    }
+    printf("to j einai: %d\n", j);
+    for(p = k; p < totalChars; p++){
+        newArray[j] = charArray[p];
+        j++;
+    }
+}
+
+/*
+ * menu
+ */
+
+int menu(){
+    int answer;
+    do{
+        printf("Press 1 to add new runs\n");
+        printf("Press 2 to modify an existing run\n");
+        printf("Press 3 to delete a run\n");
+        scanf("%d", &answer);
+    }while(answer != 1 && answer != 2 && answer != 3);
+    return answer;
 }
 
 /*
@@ -50,6 +80,16 @@ int totalCharacters(run *runs, int totalRuns){
     }
     return total_chars;
 }
+
+/*
+ * print runs in compressed mode
+ */
+void printRunsInCompressedMode(run *runs, int totalRuns){
+    int i;
+    for(i = 0; i < totalRuns; i++) printf("%d%c", runs[i].count, runs[i].c);
+    printf("\n");
+}
+
 
 /*
  * print runs
@@ -126,10 +166,9 @@ int openTextFile(FILE **fp, char *text_file){
 
 int main(int argc, char *argv[]){
     FILE *tfp = NULL, *bfp = NULL;
-    char text_file[100], bin_file[100];
+    char text_file[100], bin_file[100], *runs_array, inchar, *new_array;
     run *runs;
-    int total_runs, total_chars;
-    char *runs_array;
+    int total_runs, total_chars, answer, times, position, size_of_new_array;
     if(argc == 3){
         strcpy(bin_file, argv[1]);
         strcpy(text_file, argv[2]);
@@ -152,7 +191,35 @@ int main(int argc, char *argv[]){
         total_chars = totalCharacters(runs, total_runs);
         runs_array = (char *)malloc(total_chars * sizeof(char));
         putRunsIntoAnArray(runs_array, runs, total_runs);
-        printArray(runs_array, total_chars);
+        printf("Your compressed file has the following format\n");
+        printRunsInCompressedMode(runs, total_runs);
+        printf("The total characters are: %d\n", total_chars);
+        free(runs);
+        answer = menu();
+        if(answer == 1){
+            printf("In what position do you want to add the run?\n");
+            printf("Give a number between 0 and %d\n", total_chars);
+            do {
+                scanf("%d", &position);
+            }while(position < 0 || position > total_chars);
+            printf("What character do you want to add?\n");
+            do{
+                scanf("%c", &inchar);
+            }while(inchar == '\n' || inchar == '\b'
+                   || inchar == '\f' || inchar == '\n'
+                   || inchar == '\r' || inchar == '\t'
+                   || inchar == ' ');
+            printf("How many times?\n");
+            do{
+                scanf("%d", &times);
+            }while(times <= 0);
+            size_of_new_array = times+total_chars;
+            new_array = (char *)malloc(size_of_new_array * sizeof(char));
+            insertNewChar(inchar, times, position, runs_array, total_chars, new_array);
+            printArray(new_array, size_of_new_array);
+        }
+        exit(1);
+
     }
 
     /*
